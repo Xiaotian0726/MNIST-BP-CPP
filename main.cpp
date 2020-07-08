@@ -11,6 +11,8 @@ using namespace std;
     2020-07-09 1:20
     studying git
     on brance dev
+
+    1
 */
 
 vector< vector<double> > train_images;        // 训练集图像

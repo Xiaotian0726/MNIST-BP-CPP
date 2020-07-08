@@ -13,6 +13,8 @@ using namespace std;
     on brance dev
 
     1
+
+    after stash
 */
 
 vector< vector<double> > train_images;        // 训练集图像

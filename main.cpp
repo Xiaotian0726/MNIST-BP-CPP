@@ -7,6 +7,12 @@
 
 using namespace std;
 
+/*
+    2020-07-09 1:20
+    studying git
+    on brance dev
+*/
+
 vector< vector<double> > train_images;        // 训练集图像
 vector<double> train_labels;                  // 训练集标签
 vector< vector<double> > test_images;         // 测试集图像

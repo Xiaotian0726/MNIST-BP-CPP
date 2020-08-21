@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
-
+#include <Windows.h>
 using namespace std;
 
 /*
@@ -312,6 +312,7 @@ int main() {
 	read_test_images();                 // 载入测试集图像
 	read_test_labels();                 // 载入测试集标签
 	init_parameters();                  // 为权重矩阵和偏置向量随机赋初值
-	train_and_test();	
+	train_and_test();
+	system("pause");
 	return 0;
 }

@@ -5,17 +5,8 @@
 #include <cstdlib>
 #include <cmath>
 #include <Windows.h>
+
 using namespace std;
-
-/*
-    2020-07-09 1:20
-    studying git
-    on brance dev
-
-    1
-
-    after stash
-*/
 
 vector< vector<double> > train_images;        // 训练集图像
 vector<double> train_labels;                  // 训练集标签
@@ -23,7 +14,7 @@ vector< vector<double> > test_images;         // 测试集图像
 vector<double> test_labels;                   // 测试集标签
 
 const double learning_rate = 0.08;      // 学习率
-const int epoch = 15;                    // 学习轮次
+const int epoch = 15;                   // 学习轮次
 const int nh = 30;                      // 隐藏单元数量（单隐藏层）
 double w1[784][nh];                     // 输入层到隐藏层的权重矩阵
 double w2[nh][10];                      // 隐藏层到输出层的权重矩阵
@@ -40,10 +31,11 @@ int reverse_int(int i) {
 	ch2 = (i >> 8) & 255;
 	ch3 = (i >> 16) & 255;
 	ch4 = (i >> 24) & 255;
-	return((int)ch1 << 24) + ((int)ch2 << 16) + ((int)ch3 << 8) + ch4;
+	return((int) ch1 << 24) + ((int)ch2 << 16) + ((int) ch3 << 8) + ch4;
 }
 
-void read_train_images() {                 // 载入训练集图像
+// 载入训练集图像
+void read_train_images() {  
 	ifstream file("train-images-idx3-ubyte", ios::binary);
 	if (file.is_open()) {
 		int magic_number = 0;
@@ -51,10 +43,10 @@ void read_train_images() {                 // 载入训练集图像
 		int row = 0;
 		int col = 0;
 		
-		file.read((char*)&magic_number, sizeof(magic_number));
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		file.read((char*)&row, sizeof(row));
-		file.read((char*)&col, sizeof(col));
+		file.read((char*) &magic_number, sizeof(magic_number));
+		file.read((char*) &number_of_images, sizeof(number_of_images));
+		file.read((char*) &row, sizeof(row));
+		file.read((char*) &col, sizeof(col));
 		
 		magic_number = reverse_int(magic_number);
 		number_of_images = reverse_int(number_of_images);
@@ -66,7 +58,7 @@ void read_train_images() {                 // 载入训练集图像
 			for (int r = 0; r < row; r++) {
 				for (int c = 0; c < col; c++) {
 					unsigned char pixel = 0;
-					file.read((char*)&pixel, sizeof(pixel));
+					file.read((char*) &pixel, sizeof(pixel));
 					this_image.push_back(pixel);
 					this_image[r * 28 + c] /= 255;          // 像素值归一化处理
 				}
@@ -77,29 +69,31 @@ void read_train_images() {                 // 载入训练集图像
 	}
 }
  
-void read_train_labels() {                   // 载入训练集标签
+// 载入训练集标签
+void read_train_labels() {                   
 	ifstream file;
 	file.open("train-labels-idx1-ubyte", ios::binary);
 	if (file.is_open()) {
 		int magic_number = 0;
 		int number_of_images = 0;
 		
-		file.read((char*)&magic_number, sizeof(magic_number));
-		file.read((char*)&number_of_images, sizeof(number_of_images));
+		file.read((char*) &magic_number, sizeof(magic_number));
+		file.read((char*) &number_of_images, sizeof(number_of_images));
 
 		magic_number = reverse_int(magic_number);
 		number_of_images = reverse_int(number_of_images);
 
 		for (int i = 0; i < number_of_images; i++) {
 			unsigned char label = 0;
-			file.read((char*)&label, sizeof(label));
-			train_labels.push_back((double)label);
+			file.read((char*) &label, sizeof(label));
+			train_labels.push_back((double) label);
 		}
 		printf("%d, train labels success\n", train_labels.size());
 	}
 }
 
-void read_test_images() {                  // 载入测试集图像
+// 载入测试集图像
+void read_test_images() {                 
 	ifstream file("t10k-images-idx3-ubyte", ios::binary);
 	if (file.is_open()) {
 		int magic_number = 0;
@@ -107,10 +101,10 @@ void read_test_images() {                  // 载入测试集图像
 		int row = 0;
 		int col = 0;
 
-		file.read((char*)&magic_number, sizeof(magic_number));
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		file.read((char*)&row, sizeof(row));
-		file.read((char*)&col, sizeof(col));
+		file.read((char*) &magic_number, sizeof(magic_number));
+		file.read((char*) &number_of_images, sizeof(number_of_images));
+		file.read((char*) &row, sizeof(row));
+		file.read((char*) &col, sizeof(col));
 		
 		magic_number = reverse_int(magic_number);
 		number_of_images = reverse_int(number_of_images);
@@ -122,7 +116,7 @@ void read_test_images() {                  // 载入测试集图像
 			for (int r = 0; r < row; r++) {
 				for (int c = 0; c < col; c++) {
 					unsigned char pixel = 0;
-					file.read((char*)&pixel, sizeof(pixel));
+					file.read((char*) &pixel, sizeof(pixel));
 					this_image.push_back(pixel);
 					this_image[r * 28 + c] /= 255;          // 像素值归一化处理
 				}
@@ -133,29 +127,31 @@ void read_test_images() {                  // 载入测试集图像
 	}
 }
 
-void read_test_labels() {                       // 载入测试集标签
+// 载入测试集标签
+void read_test_labels() {                       
 	ifstream file;
 	file.open("t10k-labels-idx1-ubyte", ios::binary);
 	if (file.is_open()) {
 		int magic_number = 0;
 		int number_of_images = 0;
 		
-		file.read((char*)&magic_number, sizeof(magic_number));
-		file.read((char*)&number_of_images, sizeof(number_of_images));
+		file.read((char*) &magic_number, sizeof(magic_number));
+		file.read((char*) &number_of_images, sizeof(number_of_images));
 		
 		magic_number = reverse_int(magic_number);
 		number_of_images = reverse_int(number_of_images);
 
 		for (int i = 0; i < number_of_images; i++) {
 			unsigned char label = 0;
-			file.read((char*)&label, sizeof(label));
+			file.read((char*) &label, sizeof(label));
 			test_labels.push_back((double)label);
 		}
 		printf("%d, test labels success\n", test_labels.size());
 	}
 }
 
-void init_parameters() {                      // 为权重矩阵和偏置向量随机赋初值
+// 为权重矩阵和偏置向量随机赋初值
+void init_parameters() {                      
 	for (int i = 0; i < 784; i++) {
 		for (int j = 0; j < nh; j++) w1[i][j] = rand() / (10 * (double)RAND_MAX) - 0.05;
 	}
@@ -168,7 +164,7 @@ void init_parameters() {                      // 为权重矩阵和偏置向量�
 	for (int i = 0; i < 10; i++) bias2[i] = rand() / (10 * (double)RAND_MAX) - 0.1;
 }
 
-// 激活函数sigmoid，可以把x映射到0~1之间
+// 激活函数 sigmoid，可以把 x 映射到 0 ~ 1 之间
 // s(x) = 1 / (1 + e^(-x))
 // s'(x) = s(x) * (1 - s(x))
 double sigmoid(double x) {
@@ -201,7 +197,7 @@ vector<double> get_z(vector<double>& hidden_out) {
 	return z;
 }
 
-// 计算损失函数（1/2均方误差）
+// 计算损失函数（1/2 均方误差）
 double get_loss(vector<double>& z, double label) {
 	double loss = 0;
 	int true_label = (int)label;
@@ -300,10 +296,10 @@ void test() {
 				recognize = i;
 			}
 		}
-		//printf("test image %d, predict = %d, true = %d\n", i + 1, recognize, true_label);
+		// printf("test image %d, predict = %d, true = %d\n", i + 1, recognize, true_label);
 		if (recognize == true_label) cnt++;
 	}
-	printf("epoch = %d, precision = %f\n", e, (double)cnt / test_images.size());
+	printf("epoch = %d, precision = %f\n", e, (double) cnt / test_images.size());
 }
 
 int main() {
